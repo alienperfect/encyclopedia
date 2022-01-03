@@ -14,10 +14,12 @@
       {% block sidebar %}
         <ul class="sidebar-nav">
           <li><a href="#">Home</a></li>
-          <li><a href="#">Articles</a></li>
+          <li><a href="/articles/">Articles</a></li>
+          <li><a href="/accounts/login/">Login</a></li>
 
 					{% if user.is_authenticated %}
             <li>{{ user.username }}</li>
+            <li><a href="/accounts/logout/">Logout</a></li>
           {% endif %}
 				</ul>
 			{% endblock %}

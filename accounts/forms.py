@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, User
 from .models import User
 
 
-class RegisterForm(UserCreationForm):
+class SignUpForm(UserCreationForm):
     password1 = forms.CharField(
         label=_("Password"),
         strip=False,
