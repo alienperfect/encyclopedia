@@ -7,4 +7,10 @@ class CategoriesView(ListView):
     model = Category
     template_name = 'categories.html'
     paginate_by = 25
-    extra_context = {'count': Category.objects.count()}
+    ordering = ['name']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['count'] = Category.objects.count()
+
+        return context

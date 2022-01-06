@@ -1,11 +1,10 @@
 {% extends "base.html" %}
 
 {% block title %}
-	<title>Unsaved: {{ article.title }}</title>
+	<title>New article</title>
 {% endblock %}
 
 {% block content %}
-	<h2>{{ article.title }}</h2>
     <form method="POST">
         {{ form.as_p }}
         {% csrf_token %}

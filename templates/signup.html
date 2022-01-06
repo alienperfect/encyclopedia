@@ -5,10 +5,14 @@
 {% endblock %}
 
 {% block content %}
+<div class="d-flex justify-content-lg-center">
     <form method="POST">
-        {{ form.as_p }}
+        <table>
+        {{ form.as_table }}
         {% csrf_token %}
+        </table>
         <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-    <p>Already have an account? <a href="#">Sign In</a></p>
+        <p>Already have an account? <a href="{% url 'accounts:login' %}">Login</a></p>
+    </form> 
+</div>
 {% endblock %}

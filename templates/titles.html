@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}
+	<title>Titles</title>
+{% endblock %}
+
+{% block content %}
+	<h2>We have {{ count }} title{{ count|pluralize }} in total.</h2>
+	<p><a href="{% url 'articles:create' %}">Create title</a></p>
+	<ul>
+		{% for title in title_list %}
+		<li>{{ title.title }}</li>
+		{% endfor %}
+	</ul>
+{% endblock %}

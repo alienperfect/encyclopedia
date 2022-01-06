@@ -1,32 +1,57 @@
-from django.views.generic import UpdateView
+from django.http.response import HttpResponseRedirect
+from django.views.generic import UpdateView, CreateView
 from django.views.generic.list import ListView
-from django.urls import reverse_lazy
-from .models import Article, Category
-from .forms import ArticleEditForm
+from django.urls import reverse_lazy, reverse
+from django.db.models import Q
+from .models import Article
+from .forms import ArticleCreateForm, ArticleEditForm
+from titles.models import Title
 
 
 class ArticlesView(ListView):
     model = Article
     template_name = 'articles.html'
     paginate_by = 25
-    extra_context = {'count': Article.objects.count()}
+    ordering = ['title']
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['count'] = Article.objects.count()
+
+        return context
+
+
+class ArticleCreateView(CreateView):
+    model = Article
+    form_class = ArticleCreateForm
+    template_name = 'article_create.html'
+    success_url = reverse_lazy('articles:articles')
+
+    def form_valid(self, form):
+        article = form.save(commit=False)
+        article.created_by = self.request.user
+        article.save()
+
+        return super().form_valid(form)
 
 
 class ArticleEditView(UpdateView):
     model = Article
     form_class = ArticleEditForm
     template_name = 'article_edit.html'
-    success_url = reverse_lazy('articles:articles')
 
     def form_valid(self, form):
-        copy = Article.objects.get(pk=self.object.id)
-        copy.pk = None
-        copy.text = self.object.text
-        copy.created_by_id = self.request.user.id
-        copy.save()
+        article = Article.objects.get(pk=self.object.id)
+        article.pk = None
+        article.text = self.object.text
+        article.created_by_id = self.request.user.id
+        article.version = self.object.version + 1
+        article.save()
 
-        category_set = Category.objects.all()
-        for category in category_set.iterator():
-            self.object.category.set(category.id)
+        return HttpResponseRedirect(reverse('articles:articles'))
 
-        return super().form_valid(form)
+    def get_object(self):
+        title = Title.objects.get(title=self.kwargs['title'])
+        article = Article.objects.get(Q(title=title.pk) & Q(version=self.kwargs['version']))
+
+        return article
