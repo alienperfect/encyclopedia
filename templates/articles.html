@@ -6,10 +6,10 @@
 
 {% block content %}
 	<h2>We have {{ count }} article{{ count|pluralize }} in total.</h2>
-	<p><a href="{% url 'articles:create' %}">Create article</a></p>
+	<p><a href="{% url 'articles:articles-create' %}">Create article</a></p>
 	<ul>
-		{% for article in article_list %}
-		<li><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></li>
+		{% for article in articles_unique %}
+		<li><a href="{{ article.get_absolute_url_detail }}">{{ article.title }}</a></li>
 		{% endfor %}
 	</ul>
 {% endblock %}

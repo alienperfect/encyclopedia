@@ -19,11 +19,8 @@
           <a class="nav-link" href="{% url 'articles:articles' %}">Articles</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'categories:categories' %}">Categories</a>
+          <a class="nav-link" href="{% url 'articles:categories' %}">Categories</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'titles:titles' %}">Titles</a>
-        </li> 
       </ul>
       <ul class="nav navbar-nav navbar-right">
         {% if user.is_authenticated %}

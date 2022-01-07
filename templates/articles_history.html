@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}
+	<title>History</title>
+{% endblock %}
+
+{% block content %}
+    <h1>{{ title }} - history</h1>
+	<ul>
+		{% for article in articles_all %}
+		<li><a href="{{ article.get_absolute_url_history_detail }}">{{ article.title }}</a></li>
+		{% endfor %}
+	</ul>
+{% endblock %}
