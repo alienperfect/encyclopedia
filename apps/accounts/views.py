@@ -4,8 +4,8 @@ from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.views.generic.edit import CreateView
 from django.http import HttpResponseRedirect
-from .forms import CustomAuthenticationForm, SignUpForm
-from .models import User
+from apps.accounts.forms import CustomAuthenticationForm, SignUpForm
+from apps.accounts.models import User
 
 
 class SignUpView(CreateView):

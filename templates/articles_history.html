@@ -6,9 +6,9 @@
 
 {% block content %}
     <h1>{{ title }} - history</h1>
-	<ul>
+	<ul class="list-group">
 		{% for article in articles_all %}
-		<li><a href="{{ article.get_absolute_url_history_detail }}">{{ article.title }}</a></li>
+		<li class="list-group-item"><a href="{{ article.get_absolute_url_history_detail }}">{{ article.title }}</a> - Version {{ article.version }}</li>
 		{% endfor %}
 	</ul>
 {% endblock %}

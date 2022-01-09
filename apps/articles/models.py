@@ -25,7 +25,7 @@ class Article(models.Model):
     text = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
-    category = models.ManyToManyField(Category)
+    category = models.ManyToManyField(Category, blank=True)
     version = models.IntegerField(default=1)
 
     def get_absolute_url_edit(self):

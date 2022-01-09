@@ -12,7 +12,7 @@ class TitleCreateForm(forms.ModelForm):
 
 class ArticleCreateForm(forms.ModelForm):
     title = forms.CharField(max_length=256)
-    category = forms.ModelMultipleChoiceField(queryset=Category.objects.all())
+    category = forms.ModelMultipleChoiceField(required=False, queryset=Category.objects.all())
 
     def clean_title(self):
         title = self.cleaned_data['title']
@@ -27,7 +27,7 @@ class ArticleCreateForm(forms.ModelForm):
 
 
 class ArticleEditForm(forms.ModelForm):
-    category = forms.ModelMultipleChoiceField(queryset=Category.objects.all())
+    category = forms.ModelMultipleChoiceField(required=False, queryset=Category.objects.all())
 
     def clean_text(self):
         pk = self.instance.pk

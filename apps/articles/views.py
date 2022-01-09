@@ -45,12 +45,10 @@ class ArticlesView(ListView):
     model = Article
     template_name = 'articles.html'
     paginate_by = 25
-    ordering = ['title']
+    ordering = ['-id']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['count'] = Title.objects.count()
-
         title = Title.objects.all()
 
         articles = []
@@ -59,6 +57,7 @@ class ArticlesView(ListView):
             if article != None:
                 articles.append(article)
 
+        context['count'] = len(articles)
         context['articles_unique'] = articles
 
         return context
@@ -75,12 +74,9 @@ class ArticleDetailView(DetailView):
         return context
 
     def get_object(self):
-        title = Title.objects.filter(title=self.kwargs['title']).first()
+        title = Title.objects.get(title=self.kwargs['title'])
 
-        if title.exists():
-            article = Article.objects.filter(title=title.pk).latest('version')
-
-        return article
+        return Article.objects.filter(title=title.pk).latest('version')
 
 
 class ArticlesHistoryView(ListView):
@@ -120,9 +116,8 @@ class ArticleCreateView(CreateView):
     success_url = reverse_lazy('articles:articles')
 
     def form_valid(self, form):
-        article = form.save()
-        article.created_by = self.request.user
-        article.save()
+        form.instance.created_by = self.request.user
+        form.save()
 
         return super().form_valid(form)
 
