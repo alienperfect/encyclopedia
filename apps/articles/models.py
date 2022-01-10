@@ -6,6 +6,9 @@ from django.urls import reverse
 class Title(models.Model):
     title = models.CharField(unique=True, max_length=256)
 
+    def get_absolute_url_detail(self):
+        return reverse('articles:articles-detail', kwargs={'title': self.title})
+
     def __str__(self):
         return self.title
 

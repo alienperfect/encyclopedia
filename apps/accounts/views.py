@@ -1,11 +1,12 @@
-from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.views.generic.edit import CreateView
+from django.views.generic.list import ListView
 from django.http import HttpResponseRedirect
 from apps.accounts.forms import CustomAuthenticationForm, SignUpForm
 from apps.accounts.models import User
+from apps.articles.models import Article, Title
 
 
 class SignUpView(CreateView):
@@ -26,3 +27,19 @@ class LoginView(LoginView):
     template_name = 'login.html'
     redirect_field_name = 'next'
     redirect_authenticated_user = True
+
+
+class ProfileView(ListView):
+    model = Article
+    template_name = 'profile.html'
+
+
+class ProfileActivityView(ListView):
+    model = Article
+    template_name = 'profile_activity.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['my_articles'] = Title.objects.filter(article__created_by=self.request.user).distinct().order_by('title')
+
+        return context

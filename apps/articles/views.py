@@ -45,20 +45,14 @@ class ArticlesView(ListView):
     model = Article
     template_name = 'articles.html'
     paginate_by = 25
-    ordering = ['-id']
+    ordering = ['title']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        title = Title.objects.all()
 
-        articles = []
-        for num in range(len(title)):
-            article = Article.objects.filter(title=title[num].pk).last()
-            if article != None:
-                articles.append(article)
-
-        context['count'] = len(articles)
-        context['articles_unique'] = articles
+        unique_articles = Title.objects.filter().distinct().order_by('title')
+        context['unique_articles'] = unique_articles
+        context['count'] = len(unique_articles)
 
         return context
 

@@ -15,7 +15,7 @@
     		</tr>
   		</thead>
   		<tbody>
-		{% for article in articles_unique %}
+		{% for article in unique_articles %}
     		<tr>
       			<td><a href="{{ article.get_absolute_url_detail }}">{{ article.title }}</a></td>
       			<td>{{ article.created_at }}</td>
