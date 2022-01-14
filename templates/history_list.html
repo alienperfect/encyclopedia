@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}
+	<title>History</title>
+{% endblock %}
+
+{% block content %}
+  <h1>{{ title }} - history</h1>
+	<ul class="list-group">
+		{% for article in article_list %}
+		<li class="list-group-item"><a href="{{ article.get_absolute_url }}">Version {{ article.version }} | {{ article.edited_on }} | {{ article.editor.username }}</a></li>
+		{% endfor %}
+	</ul>
+{% endblock %}

@@ -6,14 +6,14 @@ from django.views.generic.list import ListView
 from django.http import HttpResponseRedirect
 from apps.accounts.forms import CustomAuthenticationForm, SignUpForm
 from apps.accounts.models import User
-from apps.articles.models import Article, Title
+from apps.articles.models import Article
 
 
 class SignUpView(CreateView):
     model = User
     template_name = 'signup.html'
     form_class = SignUpForm
-    success_url = reverse_lazy('articles:articles')
+    success_url = reverse_lazy('articles:article-list')
 
     def form_valid(self, form):
         self.object = form.save()
@@ -32,14 +32,3 @@ class LoginView(LoginView):
 class ProfileView(ListView):
     model = Article
     template_name = 'profile.html'
-
-
-class ProfileActivityView(ListView):
-    model = Article
-    template_name = 'profile_activity.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['my_articles'] = Title.objects.filter(article__created_by=self.request.user).distinct().order_by('title')
-
-        return context

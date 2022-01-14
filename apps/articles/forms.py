@@ -1,33 +1,30 @@
 from django import forms
-from django.db.utils import IntegrityError
-from apps.articles.models import Title, Category, Article
-
-
-class TitleCreateForm(forms.ModelForm):
-
-    class Meta:
-        model = Title
-        fields = '__all__'
+from django.core.exceptions import ObjectDoesNotExist
+from apps.articles.models import Article, Category
 
 
 class ArticleCreateForm(forms.ModelForm):
-    title = forms.CharField(max_length=256)
     category = forms.ModelMultipleChoiceField(required=False, queryset=Category.objects.all())
-
-    def clean_title(self):
-        title = self.cleaned_data['title']
-        try:
-            return Title.objects.create(title=title)
-        except IntegrityError:
-            raise forms.ValidationError('Article with this title already exists.')
 
     class Meta:
         model = Article
         fields = ['title', 'text', 'category']
 
+    def clean_title(self):
+        title = self.data['title']
+        try:
+            Article.objects.get(title=title)
+            raise forms.ValidationError('Article with this title already exists.')
+        except ObjectDoesNotExist:
+            return title
+
 
 class ArticleEditForm(forms.ModelForm):
     category = forms.ModelMultipleChoiceField(required=False, queryset=Category.objects.all())
+
+    class Meta:
+        model = Article
+        fields = ['text', 'category']
 
     def clean_text(self):
         pk = self.instance.pk
@@ -38,7 +35,3 @@ class ArticleEditForm(forms.ModelForm):
             raise forms.ValidationError('No changes detected.')
 
         return text
-
-    class Meta:
-        model = Article
-        fields = ['text', 'category']
