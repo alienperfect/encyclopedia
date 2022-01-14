@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}
+	<title>{{ title }}</title>
+{% endblock %}
+
+{% block content %}
+	<h2>{{ title }}</h2>	
+	<a href="{{ articleold.get_absolute_history }}">View history</a> | <a href="{{ articleold.get_absolute_edit }}">Edit</a>
+	<p>Edited on {{ articleold.edited_on }} by {{ articleold.editor.username }}</p>
+	<p>{{ text }}</p>
+{% endblock %}

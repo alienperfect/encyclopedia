@@ -1,15 +1,13 @@
 from django.urls import path
-from apps.articles.views import TitlesView, TitleCreateView, CategoriesView, ArticlesView, ArticleDetailView, ArticlesHistoryView, ArticleHistoryDetailView, ArticleCreateView, ArticleEditView
+from apps.articles.views import ArticleListView, ArticleDetailView, ArticleCreateView, ArticleEditView, HistoryListView, HistoryDetailView, CategoryListView
 
 app_name = 'articles'
 urlpatterns = [
-    path('', ArticlesView.as_view(), name='articles'),
-    path('titles/', TitlesView.as_view(), name='titles'),
-    path('titles/create/', TitleCreateView.as_view(), name='titles-create'),
-    path('categories/', CategoriesView.as_view(), name='categories'),
-    path('<title>/', ArticleDetailView.as_view(), name='articles-detail'),
-    path('<title>/history/', ArticlesHistoryView.as_view(), name='articles-history'),
-    path('<title>/history/version=<int:version>', ArticleHistoryDetailView.as_view(), name='articles-detail-history'),
+    path('', ArticleListView.as_view(), name='article-list'),
+    path('topic/<title>/', ArticleDetailView.as_view(), name='article-detail'),
     path('create/', ArticleCreateView.as_view(), name='articles-create'),
-    path('<title>/edit/', ArticleEditView.as_view(), name='articles-edit')
+    path('topic/<title>?action=edit', ArticleEditView.as_view(), name='article-edit'),
+    path('topic/<title>?action=history', HistoryListView.as_view(), name='history-list'),
+    path('topic/<title>?action=history&version=<version>', HistoryDetailView.as_view(), name='history-detail'),
+    path('browse/', CategoryListView.as_view(), name='categories')
 ]
