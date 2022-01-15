@@ -21,10 +21,11 @@ class ArticleCreateForm(forms.ModelForm):
 
 class ArticleEditForm(forms.ModelForm):
     category = forms.ModelMultipleChoiceField(required=False, queryset=Category.objects.all())
+    msg = forms.CharField(max_length=256, required=True)
 
     class Meta:
         model = Article
-        fields = ['text', 'category']
+        fields = ['text', 'category', 'msg']
 
     def clean_text(self):
         pk = self.instance.pk

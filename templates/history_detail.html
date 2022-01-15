@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block title %}
-	<title>{{ title }}</title>
+	<title>{{ article.json_data.title }} - version {{ article.json_data.version }}</title>
 {% endblock %}
 
 {% block content %}
-	<h2>{{ title }}</h2>	
-	<a href="{{ articleold.get_absolute_history }}">View history</a> | <a href="{{ articleold.get_absolute_edit }}">Edit</a>
-	<p>Edited on {{ articleold.edited_on }} by {{ articleold.editor.username }}</p>
-	<p>{{ text }}</p>
+	<h2>{{ article.json_data.title }} - version {{ article.json_data.version }}</h2>	
+	<a href="{{ article.get_absolute_history }}">View history</a> | <a href="{{ article.get_absolute_edit }}">Edit</a>
+	<p>Edited on {{ article.json_data.edited_on }} by {{ article.json_data.editor }}</p>
+	<p>{{ article.json_data.text }}</p>
 {% endblock %}

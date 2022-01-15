@@ -5,10 +5,10 @@
 {% endblock %}
 
 {% block content %}
-  <h1>{{ title }} - history</h1>
+  <h2>{{ title }} - history</h2>
 	<ul class="list-group">
 		{% for article in article_list %}
-		<li class="list-group-item"><a href="{{ article.get_absolute_url }}">Version {{ article.version }} | {{ article.edited_on }} | {{ article.editor.username }}</a></li>
+		<li class="list-group-item"><a href="{{ article.get_absolute_url }}">Version {{ article.json_data.version }} | {{ article.json_data.edited_on }} | {{ article.json_data.editor }} ({{ article.json_data.msg }})</a></li>
 		{% endfor %}
 	</ul>
 {% endblock %}

@@ -1,8 +1,9 @@
 from datetime import datetime
+from django.db.models import Q
 from django.http.response import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views import generic
-from apps.articles.models import Article, ArticleOld, Category
+from apps.articles.models import Article, History, Category
 from apps.articles.forms import ArticleCreateForm, ArticleEditForm
 
 
@@ -37,13 +38,20 @@ class ArticleCreateView(generic.CreateView):
         form.instance.editor = self.request.user
         form.save()
 
-        article = ArticleOld.objects.create(
-            content={'title': form.cleaned_data['title'], 'text': form.cleaned_data['text']},
-            article=form.instance,
-            editor=self.request.user
+        article_copy = History.objects.create(
+            json_data={
+                'title': form.cleaned_data['title'],
+                'text': form.cleaned_data['text'],
+                'editor': self.request.user.username,
+                'editor_id': self.request.user.id,
+                'edited_on': datetime.utcnow().isoformat(),
+                'version': 1,
+                'msg': form.instance.msg
+                },
+            content_object=form.instance
             )
 
-        article.save()
+        article_copy.save()
 
         return super().form_valid(form)
 
@@ -54,18 +62,25 @@ class ArticleEditView(generic.UpdateView):
     template_name = 'article_edit.html'
 
     def form_valid(self, form):
+        form.instance.editor = self.request.user
         form.instance.edited_on = datetime.now()
         form.instance.version += 1
         form.save()
 
-        article = ArticleOld.objects.create(
-            content={'title': form.instance.title, 'text': form.cleaned_data['text']},
-            article=form.instance,
-            editor=self.request.user,
-            version=form.instance.version
+        article_copy = History.objects.create(
+            json_data={
+                'title': form.instance.title,
+                'text': form.cleaned_data['text'],
+                'editor': self.request.user.username,
+                'editor_id': self.request.user.id,
+                'edited_on': datetime.utcnow().isoformat(),
+                'version': form.instance.version,
+                'msg': form.instance.msg
+                },
+            content_object=form.instance
             )
 
-        article.save()
+        article_copy.save()
 
         return HttpResponseRedirect(reverse('articles:article-detail', kwargs={'title': form.instance.title}))
 
@@ -74,30 +89,28 @@ class ArticleEditView(generic.UpdateView):
 
 
 class HistoryListView(generic.ListView):
-    model = ArticleOld
+    model = History
     template_name = 'history_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         title = self.kwargs['title']
-        context['article_list'] = ArticleOld.objects.filter(content__icontains=title).order_by('-version')
+        context['article_list'] = History.objects.filter(json_data__icontains=title).order_by('-json_data__version')
         context['title'] = title
 
         return context
 
 
 class HistoryDetailView(generic.DetailView):
-    model = ArticleOld
+    model = History
     template_name = 'history_detail.html'
 
     def get_object(self):
-        return ArticleOld.objects.get(content__icontains=self.kwargs['title'], version=self.kwargs['version'])
+        return History.objects.filter(Q(json_data__title=self.kwargs['title']) & Q(json_data__version=self.kwargs['version']))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        instance = ArticleOld.objects.get(content__icontains=self.kwargs['title'], version=self.kwargs['version'])
-        context['title'] = instance.content['title']
-        context['text'] = instance.content['text']
+        context['article'] = History.objects.filter(Q(json_data__title__icontains=self.kwargs['title']) & Q(json_data__version=int(self.kwargs['version'])))[0]
 
         return context
 
