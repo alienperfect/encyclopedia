@@ -29,7 +29,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-LOGIN_REDIRECT_URL = reverse_lazy('articles:article-list')
+LOGIN_REDIRECT_URL = reverse_lazy('wiki:article-list')
 LOGOUT_REDIRECT_URL = reverse_lazy('accounts:login')
 
 # Application definition
@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.accounts',
-    'apps.articles',
+    'apps.wiki',
     'bootstrap4'
 ]
 

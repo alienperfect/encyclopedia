@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}
+	<title>History</title>
+{% endblock %}
+
+{% block content %}
+  <h2>{{ title }} - history</h2>
+	<ul class="list-group">
+		{% for category in category_list %}
+		<li class="list-group-item"><a href="{{ category.get_absolute_url_category }}">Version {{ category.json_data.version }} | {{ category.json_data.edited_on }} | {{ category.json_data.editor }} ({{ category.json_data.msg }})</a></li>
+		{% endfor %}
+	</ul>
+{% endblock %}

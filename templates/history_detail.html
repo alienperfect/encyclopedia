@@ -6,7 +6,7 @@
 
 {% block content %}
 	<h2>{{ article.json_data.title }} - version {{ article.json_data.version }}</h2>	
-	<a href="{{ article.get_absolute_history }}">View history</a> | <a href="{{ article.get_absolute_edit }}">Edit</a>
+	<a href="{{ article.get_absolute_history_article }}">View history</a> | <a href="{{ article.get_absolute_edit_article }}">Edit</a>
 	<p>Edited on {{ article.json_data.edited_on }} by {{ article.json_data.editor }}</p>
 	<p>{{ article.json_data.text }}</p>
 {% endblock %}

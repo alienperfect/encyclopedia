@@ -6,14 +6,14 @@ from django.views.generic.list import ListView
 from django.http import HttpResponseRedirect
 from apps.accounts.forms import CustomAuthenticationForm, SignUpForm
 from apps.accounts.models import User
-from apps.articles.models import Article
+from apps.wiki.models import Article
 
 
 class SignUpView(CreateView):
     model = User
     template_name = 'signup.html'
     form_class = SignUpForm
-    success_url = reverse_lazy('articles:article-list')
+    success_url = reverse_lazy('wiki:article-list')
 
     def form_valid(self, form):
         self.object = form.save()

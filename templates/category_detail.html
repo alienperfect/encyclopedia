@@ -1,13 +1,16 @@
 {% extends "base.html" %}
 
 {% block title %}
-	<title>Articles</title>
+	<title>{{ category.title }}</title>
 {% endblock %}
 
 {% block content %}
-	<h2>We have {{ count }} article{{ count|pluralize }} in total.</h2>
-	<p><a href="{% url 'wiki:article-create' %}">Create new article</a></p>
-	<table class="table table-bordered">
+	<h2>{{ category.title }}</h2>	
+	<a href="{{ category.get_absolute_history }}">View history</a> | <a href="{{ category.get_absolute_edit }}">Edit</a>
+	<p>Edited on {{ category.edited_on }} by {{ category.editor.username }}</p>
+	<p>{{ category.text }}</p>
+
+    <table class="table table-bordered">
 		<thead>
     	<tr>
       	<th scope="col">Title</th>
@@ -21,4 +24,5 @@
 	{% endfor %}
   </tbody>
 </table>
+
 {% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}
+	<title>{{ category.json_data.title }} - version {{ category.json_data.version }}</title>
+{% endblock %}
+
+{% block content %}
+	<h2>{{ category.json_data.title }} - version {{ category.json_data.version }}</h2>	
+	<a href="{{ category.get_absolute_history_category }}">View history</a> | <a href="{{ category.get_absolute_edit_category }}">Edit</a>
+	<p>Edited on {{ category.json_data.edited_on }} by {{ category.json_data.editor }}</p>
+	<p>{{ category.json_data.text }}</p>
+{% endblock %}
