@@ -6,7 +6,7 @@
 
 {% block content %}
 	<h2>{{ category.title }}</h2>	
-	<a href="{{ category.get_absolute_history }}">View history</a> | <a href="{{ category.get_absolute_edit }}">Edit</a>
+	<a href="{% url 'wiki:category-history-list' title=category.title %}">View history</a> | <a href="{% url 'wiki:category-edit' title=category.title %}">Edit</a>
 	<p>Edited on {{ category.edited_on }} by {{ category.editor.username }}</p>
 	<p>{{ category.text }}</p>
 
@@ -19,7 +19,7 @@
  		<tbody>
 	{% for article in article_list %}
     <tr>
-      <td><a href="{{ article.get_absolute_detail }}">{{ article.title }}</a></td>
+      <td><a href="{{ article.get_absolute_url}}">{{ article.title }}</a></td>
     </tr>
 	{% endfor %}
   </tbody>

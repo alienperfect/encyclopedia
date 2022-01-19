@@ -5,8 +5,8 @@
 {% endblock %}
 
 {% block content %}
-	<h2>{{ article.title }}</h2>	
-	<a href="{{ article.get_absolute_history }}">View history</a> | <a href="{{ article.get_absolute_edit }}">Edit</a>
+	<h2>{{ article.title }}</h2>
+	<a href="{% url 'wiki:article-history-list' title=article.title %}">View history</a> | <a href="{% url 'wiki:article-edit' title=article.title %}">Edit</a>
 	<p>Edited on {{ article.edited_on }} by {{ article.editor.username }}</p>
 	<p>{{ object.text }}</p>
 

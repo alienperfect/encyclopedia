@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block title %}
-	<title>{{ category.json_data.title }} - version {{ category.json_data.version }}</title>
+<title>{{ object.json_data.fields.title }} - version {{ object.json_data.fields.version }}</title>
 {% endblock %}
 
 {% block content %}
-	<h2>{{ category.json_data.title }} - version {{ category.json_data.version }}</h2>	
-	<a href="{{ category.get_absolute_history_category }}">View history</a> | <a href="{{ category.get_absolute_edit_category }}">Edit</a>
-	<p>Edited on {{ category.json_data.edited_on }} by {{ category.json_data.editor }}</p>
-	<p>{{ category.json_data.text }}</p>
+<h2>{{ object.json_data.fields.title }} - version {{ object.json_data.fields.version }}</h2>	
+<a href="{% url 'wiki:category-history-list' title=object.json_data.fields.title %}">View history</a> | <a href="{% url 'wiki:category-edit' title=object.json_data.fields.title %}">Edit</a>
+<p>Edited on {{ object.json_data.fields.edited_on }} by {{ object.editor.username }}</p>
+<p>{{ object.json_data.fields.text }}</p>
 {% endblock %}
