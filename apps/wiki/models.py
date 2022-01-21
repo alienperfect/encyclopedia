@@ -12,7 +12,7 @@ class AbstractHistory(models.Model):
     text = models.TextField(blank=True)
     editor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
     edited_on = models.DateTimeField(auto_now_add=True)
-    version = models.IntegerField(default=1)
+    version = models.PositiveIntegerField(default=1)
     history = GenericRelation('History')
 
     class Meta:
@@ -25,7 +25,7 @@ class AbstractHistory(models.Model):
 
 class History(models.Model):
     json_data = models.JSONField()
-    editor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
+    editor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='editor')
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
@@ -34,17 +34,19 @@ class History(models.Model):
         verbose_name_plural = 'histories'
     
     def __str__(self):
-       return self.json_data['fields']['title']
+       return self.json_data.get('title')
 
-    def create_history(self):
-        serialize = serializers.serialize("json", self.__class__.objects.filter(pk=self.pk))
+    @classmethod
+    def create_history(cls, instance):
+        """Serializes and saves an instance to the History."""
+        serialize = serializers.serialize("json", instance.__class__.objects.filter(pk=instance.pk))
         json_data = json.loads(serialize)[0]
-        History.objects.create(json_data=json_data, editor=self.editor, content_object=self)
+        cls.objects.create(json_data=json_data, editor=instance.editor, content_object=instance)
 
 
 class Article(AbstractHistory):
     msg = models.CharField(max_length=256, default='Created the article.')
-    category = models.ManyToManyField('Category')
+    category = models.ManyToManyField('Category', related_name='category')
 
     def __str__(self):
         return self.title

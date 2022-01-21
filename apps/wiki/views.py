@@ -1,10 +1,7 @@
 from datetime import datetime
-from django.contrib.auth import get_user_model
 from django.db.models import Q
-from django.http.response import HttpResponseRedirect
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
-from apps.accounts.models import User
 from apps.wiki.models import Article, History, Category
 from apps.wiki.forms import ArticleCreateForm, ArticleEditForm, CategoryCreateForm, CategoryEditForm
 
@@ -60,7 +57,7 @@ class ArticleEditView(UpdateView):
 
 class ArticleHistoryListView(ListView):
     model = History
-    template_name = 'history_list.html'
+    template_name = 'article_history_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -73,7 +70,7 @@ class ArticleHistoryListView(ListView):
 
 class ArticleHistoryDetailView(DetailView):
     model = History
-    template_name = 'history_detail.html'
+    template_name = 'article_history_detail.html'
 
     def get_object(self):
         title = self.kwargs['title']
