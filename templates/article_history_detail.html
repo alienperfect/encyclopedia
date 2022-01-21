@@ -6,7 +6,7 @@
 
 {% block content %}
 <h2>{{ object.json_data.fields.title }} - version {{ object.json_data.fields.version }}</h2>	
-<a href="{% url 'wiki:category-history-list' title=object.json_data.fields.title %}">View history</a> | <a href="{% url 'wiki:category-edit' title=object.json_data.fields.title %}">Edit</a>
+<a href="{% url 'wiki:article-history-list' title=object.json_data.fields.title %}">View history</a> | <a href="{% url 'wiki:article-edit' title=object.json_data.fields.title %}">Edit</a>
 <p>Edited on {{ object.json_data.fields.edited_on }} by {{ object.editor.username }}</p>
 <p>{{ object.json_data.fields.text }}</p>
 {% endblock %}

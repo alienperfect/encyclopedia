@@ -16,7 +16,7 @@
  		<tbody>
 	{% for article in article_list %}
     <tr>
-      <td><a href="{{ article.get_absolute_detail }}">{{ article.title }}</a></td>
+      <td><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></td>
     </tr>
 	{% endfor %}
   </tbody>

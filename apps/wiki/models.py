@@ -1,75 +1,62 @@
+import json
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.db import models
 from django.conf import settings
+from django.core import serializers
+from django.db import models
 from django.urls import reverse
 
 
-class Article(models.Model):
+class AbstractHistory(models.Model):
     title = models.CharField(max_length=256, unique=True)
     text = models.TextField(blank=True)
     editor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
     edited_on = models.DateTimeField(auto_now_add=True)
-    version = models.IntegerField(default=1)
-    category = models.ManyToManyField('Category')
+    version = models.PositiveIntegerField(default=1)
     history = GenericRelation('History')
-    msg = models.CharField(max_length=256, default='The article was created.')
 
-    def __str__(self):
-        return self.title
+    class Meta:
+        abstract = True
 
-    def get_absolute_detail(self):
-        return reverse('wiki:article-detail', kwargs={'title': self.title})
-
-    def get_absolute_edit(self):
-        return reverse('wiki:article-edit', kwargs={'title': self.title})
-
-    def get_absolute_history(self):
-        return reverse('wiki:article-history-list', kwargs={'title': self.title})
-
-    def get_absolute_history_detail(self):
-        return reverse('wiki:article-history-detail', kwargs={'title': self.title, 'version': self.version})
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        History.create_history(self) 
 
 
 class History(models.Model):
     json_data = models.JSONField()
+    editor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name='editor')
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
     class Meta:
         verbose_name_plural = 'histories'
+    
+    def __str__(self):
+       return self.json_data.get('title')
+
+    @classmethod
+    def create_history(cls, instance):
+        """Serializes and saves an instance to the History."""
+        serialize = serializers.serialize("json", instance.__class__.objects.filter(pk=instance.pk))
+        json_data = json.loads(serialize)[0]
+        cls.objects.create(json_data=json_data, editor=instance.editor, content_object=instance)
+
+
+class Article(AbstractHistory):
+    msg = models.CharField(max_length=256, default='Created the article.')
+    category = models.ManyToManyField('Category', related_name='category')
 
     def __str__(self):
-        return self.json_data['title']
+        return self.title
 
-    def get_absolute_url_article(self):
-        return reverse('wiki:article-history-detail', kwargs={'title': self.json_data['title'], 'version': self.json_data['version']})
-
-    def get_absolute_url_category(self):
-        return reverse('wiki:category-history-detail', kwargs={'title': self.json_data['title'], 'version': self.json_data['version']})
-
-    def get_absolute_edit_article(self):
-        return reverse('wiki:article-edit', kwargs={'title': self.json_data['title']})
-    
-    def get_absolute_edit_category(self):
-        return reverse('wiki:category-edit', kwargs={'title': self.json_data['title']})
-
-    def get_absolute_history_article(self):
-        return reverse('wiki:article-history-list', kwargs={'title': self.json_data['title']})
-    
-    def get_absolute_history_category(self):
-        return reverse('wiki:category-history-list', kwargs={'title': self.json_data['title']})
+    def get_absolute_url(self):
+        return reverse('wiki:article-detail', kwargs={'title': self.title})
 
 
-class Category(models.Model):
-    title = models.CharField(max_length=256, unique=True)
-    text = models.TextField(blank=True)
-    editor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
-    edited_on = models.DateTimeField(auto_now_add=True)
-    version = models.IntegerField(default=1)
-    history = GenericRelation('History')
-    msg = models.CharField(max_length=256, default='The category was created.')
+class Category(AbstractHistory):
+    msg = models.CharField(max_length=256, default='Created the category.')
 
     class Meta:
         verbose_name_plural = 'categories'
@@ -79,9 +66,3 @@ class Category(models.Model):
 
     def get_absolute_url(self):
         return reverse('wiki:category-detail', kwargs={'title': self.title})
-
-    def get_absolute_edit(self):
-        return reverse('wiki:category-edit', kwargs={'title': self.title})
-
-    def get_absolute_history(self):
-        return reverse('wiki:category-history-list', kwargs={'title': self.title})
