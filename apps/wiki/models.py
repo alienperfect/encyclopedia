@@ -8,8 +8,6 @@ from django.urls import reverse
 
 
 class AbstractHistory(models.Model):
-    title = models.CharField(max_length=256, unique=True)
-    text = models.TextField(blank=True)
     editor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
     edited_on = models.DateTimeField(auto_now_add=True)
     version = models.PositiveIntegerField(default=1)
@@ -20,7 +18,7 @@ class AbstractHistory(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        History.create_history(self) 
+        History.create_history(self)
 
 
 class History(models.Model):
@@ -32,9 +30,9 @@ class History(models.Model):
 
     class Meta:
         verbose_name_plural = 'histories'
-    
+
     def __str__(self):
-       return self.json_data.get('title')
+        return self.json_data.get('title')
 
     @classmethod
     def create_history(cls, instance):
@@ -45,6 +43,8 @@ class History(models.Model):
 
 
 class Article(AbstractHistory):
+    title = models.CharField(max_length=256, unique=True)
+    text = models.TextField(blank=True)
     msg = models.CharField(max_length=256, default='Created the article.')
     category = models.ManyToManyField('Category', related_name='category')
 
@@ -56,6 +56,8 @@ class Article(AbstractHistory):
 
 
 class Category(AbstractHistory):
+    title = models.CharField(max_length=256, unique=True)
+    text = models.TextField(blank=True)
     msg = models.CharField(max_length=256, default='Created the category.')
 
     class Meta:
