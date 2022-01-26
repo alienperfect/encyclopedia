@@ -46,8 +46,6 @@ class ArticleEditView(UpdateView):
 
     def form_valid(self, form):
         form.instance.editor = self.request.user
-        form.instance.edited_on = datetime.utcnow().isoformat()
-        form.instance.version += 1
 
         return super().form_valid(form)
 
@@ -129,8 +127,6 @@ class CategoryEditView(UpdateView):
 
     def form_valid(self, form):
         form.instance.editor = self.request.user
-        form.instance.edited_on = datetime.now()
-        form.instance.version += 1
 
         return super().form_valid(form)
 
