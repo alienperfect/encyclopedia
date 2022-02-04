@@ -10,17 +10,17 @@ from django.urls import reverse
 
 class AbstractHistory(models.Model):
     editor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
-    edited_on = models.DateTimeField(auto_now_add=True)
+    edited_on = models.DateTimeField()
     version = models.PositiveIntegerField(default=0)
     history = GenericRelation('History')
 
     class Meta:
         abstract = True
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.edited_on = datetime.utcnow().isoformat()
         self.version += 1
-        super().save()
+        super().save(*args, **kwargs)
 
         return History.create_history(self)
 
