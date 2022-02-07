@@ -5,18 +5,18 @@
 {% endblock %}
 
 {% block content %}
-	<h2>{{ category.title }}</h2>	
-	<a href="{% url 'wiki:category-history-list' title=category.title %}">View history</a> | <a href="{% url 'wiki:category-edit' title=category.title %}">Edit</a>
-	<p>Edited on {{ category.edited_on }} by {{ category.editor.username }}</p>
-	<p>{{ category.text }}</p>
+<h2>{{ category.title }}</h2>	
+<a href="{% url 'wiki:category-history-list' title=category.title %}">View history</a> | <a href="{% url 'wiki:category-edit' title=category.title %}">Edit</a>
+<p>Edited on {{ category.edited_on }} by {{ category.editor.username }}</p>
+<p>{{ category.text }}</p>
 
-    <table class="table table-bordered">
-		<thead>
-    	<tr>
-      	<th scope="col">Title</th>
-    	</tr>
-  	</thead>
- 		<tbody>
+<table class="table table-bordered">
+	<thead>
+    <tr>
+      <th scope="col">Title</th>
+    </tr>
+  </thead>
+ 	<tbody>
 	{% for article in article_list %}
     <tr>
       <td><a href="{{ article.get_absolute_url}}">{{ article.title }}</a></td>

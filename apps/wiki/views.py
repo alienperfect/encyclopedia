@@ -23,6 +23,13 @@ class ArticleDetailView(DetailView):
     model = Article
     template_name = 'article_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        instance = Article.objects.get(title=self.kwargs['title'])
+        context['category_list'] = Category.objects.filter(category=instance)
+
+        return context
+
     def get_object(self):
         return Article.objects.get(title=self.kwargs['title'])
 

@@ -40,7 +40,7 @@ class History(models.Model):
 
     @classmethod
     def create_history(cls, instance):
-        """Serializes and saves an instance to the History."""
+        """Serializes and saves instance to History."""
         serialize = serializers.serialize("json", instance.__class__.objects.filter(pk=instance.pk))
         json_data = json.loads(serialize)[0]
         cls.objects.create(json_data=json_data, editor=instance.editor, content_object=instance)
