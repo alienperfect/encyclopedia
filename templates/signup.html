@@ -1,18 +1,17 @@
 {% extends "base.html" %}
 
 {% block title %}
-	<title>Sign Up</title>
+<title>Sign Up</title>
 {% endblock %}
 
 {% block content %}
+{% load bootstrap5 %}
 <div class="d-flex justify-content-lg-center">
-    <form method="POST">
-        <table>
-        {{ form.as_table }}
-        {% csrf_token %}
-        </table>
-        <button type="submit" class="btn btn-primary">Submit</button>
-        <p>Already have an account? <a href="{% url 'accounts:login' %}">Login</a></p>
-    </form> 
+  <form method="POST">
+  {% csrf_token %}
+	{% bootstrap_form form %}
+  <button type="submit" class="btn btn-primary">Submit</button>
+  <p>Already have an account? <a href="{% url 'accounts:login' %}">Login</a></p>
+  </form> 
 </div>
 {% endblock %}
