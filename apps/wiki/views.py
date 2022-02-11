@@ -91,7 +91,7 @@ class ArticleHistoryDetailView(DetailView):
 class CategoryListView(ListView):
     model = Category
     template_name = 'category_list.html'
-    paginate_by = 25
+    paginate_by = 20
     ordering = ['title']
 
     def get_context_data(self, **kwargs):
