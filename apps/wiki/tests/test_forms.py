@@ -39,6 +39,12 @@ class ArticleEditFormTest(TestCase):
         form = ArticleEditForm()
         self.assertTrue(form.fields['msg'].label is None or form.fields['msg'].label == 'Msg')
 
+    def test_no_text_duplicates(self):
+        user = User.objects.create_user(username='alien', email='alien@email.com', password='')
+        article = Article.objects.create(title='Bongo', editor=user)
+        form = ArticleEditForm({'msg': 'something'}, instance=article)
+        self.assertFalse(form.is_valid())
+
 
 class CategoryCreateFormTest(TestCase):
     def test_title_label(self):
@@ -51,8 +57,8 @@ class CategoryCreateFormTest(TestCase):
 
     def test_no_title_duplicates(self):
         user = User.objects.create_user(username='alien', email='alien@email.com', password='')
-        Category.objects.create(title='Drums', editor=user)
-        form = CategoryCreateForm(data={'title': 'Drums'})
+        category = Category.objects.create(title='Drums', editor=user)
+        form = CategoryCreateForm({'title': 'Drums'}, instance=category)
         self.assertFalse(form.is_valid())
 
 
@@ -64,3 +70,9 @@ class CategoryEditFormTest(TestCase):
     def test_msg_label(self):
         form = CategoryEditForm()
         self.assertTrue(form.fields['msg'].label is None or form.fields['msg'].label == 'Msg')
+
+    def test_no_text_duplicates(self):
+        user = User.objects.create_user(username='alien', email='alien@email.com', password='')
+        category = Category.objects.create(title='Drums', editor=user)
+        form = CategoryEditForm({'msg': 'something'}, instance=category)
+        self.assertFalse(form.is_valid())
