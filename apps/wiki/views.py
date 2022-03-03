@@ -1,6 +1,6 @@
-from datetime import datetime
 from django.db.models import Q
 from django.urls import reverse_lazy
+from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from apps.wiki.models import Article, History, Category
 from apps.wiki.forms import ArticleCreateForm, ArticleEditForm, CategoryCreateForm, CategoryEditForm
@@ -22,6 +22,13 @@ class ArticleListView(ListView):
 class ArticleDetailView(DetailView):
     model = Article
     template_name = 'article_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        instance = Article.objects.get(title=self.kwargs['title'])
+        context['category_list'] = Category.objects.filter(category=instance)
+
+        return context
 
     def get_object(self):
         return Article.objects.get(title=self.kwargs['title'])
@@ -84,7 +91,7 @@ class ArticleHistoryDetailView(DetailView):
 class CategoryListView(ListView):
     model = Category
     template_name = 'category_list.html'
-    paginate_by = 25
+    paginate_by = 20
     ordering = ['title']
 
     def get_context_data(self, **kwargs):

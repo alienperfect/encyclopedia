@@ -1,13 +1,23 @@
 {% extends "base.html" %}
 
 {% block title %}
-	<title>{{ article.title }}</title>
+<title>{{ article.title }}</title>
 {% endblock %}
 
 {% block content %}
-	<h2>{{ article.title }}</h2>
-	<a href="{% url 'wiki:article-history-list' title=article.title %}">View history</a> | <a href="{% url 'wiki:article-edit' title=article.title %}">Edit</a>
-	<p>Edited on {{ article.edited_on }} by {{ article.editor.username }}</p>
-	<p>{{ object.text }}</p>
+<h2>{{ article.title }}</h2>
+<a href="{% url 'wiki:article-history-list' title=article.title %}">View history</a> | <a href="{% url 'wiki:article-edit' title=article.title %}">Edit</a>
+<p>Edited on {{ article.edited_on }} by {{ article.editor.username }}</p>
+<p>{{ article.text }}</p>
+
+<div class="container">
+  <div class="row">
+		{% for category in category_list %} 
+		<div class="col-sm-1">
+			<a href="{{ category.get_absolute_url }}">{{ category.title }}</a>
+		</div>
+		{% endfor %}
+  </div>
+</div>
 
 {% endblock %}

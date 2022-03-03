@@ -1,5 +1,5 @@
 from django import forms
-from django.core.exceptions import ObjectDoesNotExist
+from django.urls import reverse_lazy
 from apps.wiki.models import Article, Category
 
 
@@ -12,11 +12,10 @@ class ArticleCreateForm(forms.ModelForm):
 
     def clean_title(self):
         title = self.data['title']
-        try:
-            Article.objects.get(title=title)
+        if Article.objects.filter(title=title).exists():
             raise forms.ValidationError('Article with this title already exists.')
-        except ObjectDoesNotExist:
-            return title
+
+        return title
 
 
 class ArticleEditForm(forms.ModelForm):
@@ -43,13 +42,12 @@ class CategoryCreateForm(forms.ModelForm):
         model = Category
         fields = ['title', 'text']
 
-    def clean_name(self):
+    def clean_title(self):
         title = self.data['title']
-        try:
-            Category.objects.get(title=title)
+        if Category.objects.filter(title=title).exists():
             raise forms.ValidationError('Category with this name already exists.')
-        except ObjectDoesNotExist:
-            return title
+
+        return title
 
 
 class CategoryEditForm(forms.ModelForm):
@@ -59,7 +57,7 @@ class CategoryEditForm(forms.ModelForm):
         model = Category
         fields = ['text', 'msg']
 
-    def clean_description(self):
+    def clean_text(self):
         pk = self.instance.pk
         text = self.cleaned_data['text']
         previous = Category.objects.get(pk=pk)

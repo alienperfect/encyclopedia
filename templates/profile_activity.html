@@ -1,14 +1,27 @@
 {% extends "base.html" %}
 
 {% block title %}
-	<title>My activity</title>
+<title>My activity</title>
 {% endblock %}
 
 {% block content %}
-	<h2>You have edited these articles:</h2>
-    <ul class="list-group">
-		{% for article in my_articles %}
-		<li class="list-group-item"><a href="{{ article.get_absolute_url_detail }}">{{ article.title }}</a></li>
-		{% endfor %}
-	</ul>
+<strong>You have edited these articles:</strong>
+{% if my_articles %}
+{% for article in my_articles %}
+<a href="{% url 'wiki:article-history-detail' title=article.json_data.fields.title version=article.json_data.fields.version %}">{{ article.json_data.fields.title }}</a>
+{% endfor %}
+{% else %}
+Nothing here yet.
+{% endif %}
+
+
+<strong>You have edited these categories:</strong>
+{% if my_categories %}
+{% for category in my_categories %}
+<a href="{% url 'wiki:category-history-detail' title=category.json_data.fields.title version=category.json_data.fields.version %}">{{ category.json_data.fields.title }}</a>
+{% endfor %}
+{% else %}
+Nothing here yet.
+{% endif %}
+
 {% endblock %}

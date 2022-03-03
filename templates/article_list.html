@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 
 {% block title %}
-	<title>Articles</title>
+<title>Articles</title>
 {% endblock %}
 
 {% block content %}
-	<h2>We have {{ count }} article{{ count|pluralize }} in total.</h2>
-	<p><a href="{% url 'wiki:article-create' %}">Create new article</a></p>
-	<table class="table table-bordered">
-		<thead>
-    	<tr>
-      	<th scope="col">Title</th>
-    	</tr>
-  	</thead>
- 		<tbody>
+<h2>We have {{ count }} article{{ count|pluralize }} in total.</h2>
+<p><a href="{% url 'wiki:article-create' %}">Create new article</a></p>
+<table class="table table-bordered">
+	<thead>
+    <tr>
+      <th scope="col">Title</th>
+    </tr>
+  </thead>
+ 	<tbody>
 	{% for article in article_list %}
     <tr>
       <td><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></td>
@@ -21,4 +21,5 @@
 	{% endfor %}
   </tbody>
 </table>
+
 {% endblock %}
