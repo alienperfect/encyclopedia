@@ -1,78 +1,62 @@
 import pdb
+from django.forms import ValidationError
 from django.test import TestCase
-from django.urls import reverse
 from apps.accounts.models import User
 from apps.wiki.forms import ArticleCreateForm, ArticleEditForm, CategoryCreateForm, CategoryEditForm
 from apps.wiki.models import Article, Category
 
 
 class ArticleCreateFormTest(TestCase):
-    def test_title_label(self):
-        form = ArticleCreateForm()
-        self.assertTrue(form.fields['title'].label is None or form.fields['title'].label == 'Title')
-
-    def test_text_label(self):
-        form = ArticleCreateForm()
-        self.assertTrue(form.fields['text'].label is None or form.fields['text'].label == 'Text')
-
-    def test_category_label(self):
-        form = ArticleCreateForm()
-        self.assertTrue(form.fields['category'].label is None or form.fields['category'].label == 'Category')
-
-    def test_no_title_duplicates(self):
+    def test_try_to_create_existing_title(self):
         user = User.objects.create_user(username='alien', email='alien@email.com', password='')
         Article.objects.create(title='Bongo', editor=user)
         form = ArticleCreateForm(data={'title': 'Bongo'})
-        self.assertFalse(form.is_valid())
+        self.assertRaises(ValidationError, form.clean_title)
+
+    def test_try_to_create_non_existing_title(self):
+        user = User.objects.create_user(username='alien', email='alien@email.com', password='')
+        Article.objects.create(title='Bongo', editor=user)
+        form = ArticleCreateForm(data={'title': 'Not bongo'})
+        self.assertTrue(form.is_valid())
 
 
 class ArticleEditFormTest(TestCase):
-    def test_text_label(self):
-        form = ArticleEditForm()
-        self.assertTrue(form.fields['text'].label is None or form.fields['text'].label == 'Text')
+    def test_try_to_save_the_same_text(self):
+        user = User.objects.create_user(username='alien', email='alien@email.com', password='')
+        article = Article.objects.create(title='Bongo', text='1', editor=user)
+        form = ArticleEditForm({'text': '1', 'msg': 'Nothing has changed'}, instance=article)
+        self.assertFalse(form.is_valid())
 
-    def test_category_label(self):
-        form = ArticleEditForm()
-        self.assertTrue(form.fields['category'].label is None or form.fields['category'].label == 'Category')
-
-    def test_msg_label(self):
-        form = ArticleEditForm()
-        self.assertTrue(form.fields['msg'].label is None or form.fields['msg'].label == 'Msg')
-
-    def test_no_text_duplicates(self):
+    def test_try_to_save_text(self):
         user = User.objects.create_user(username='alien', email='alien@email.com', password='')
         article = Article.objects.create(title='Bongo', editor=user)
-        form = ArticleEditForm({'msg': 'something'}, instance=article)
-        self.assertFalse(form.is_valid())
+        form = ArticleEditForm({'text': '1', 'msg': '1'}, instance=article)
+        self.assertTrue(form.is_valid())
 
 
 class CategoryCreateFormTest(TestCase):
-    def test_title_label(self):
-        form = CategoryCreateForm()
-        self.assertTrue(form.fields['title'].label is None or form.fields['title'].label == 'Title')
-
-    def test_text_label(self):
-        form = CategoryCreateForm()
-        self.assertTrue(form.fields['text'].label is None or form.fields['text'].label == 'Text')
-
-    def test_no_title_duplicates(self):
+    def test_try_to_create_existing_title(self):
         user = User.objects.create_user(username='alien', email='alien@email.com', password='')
-        category = Category.objects.create(title='Drums', editor=user)
-        form = CategoryCreateForm({'title': 'Drums'}, instance=category)
-        self.assertFalse(form.is_valid())
+        Category.objects.create(title='Drums', editor=user)
+        form = CategoryCreateForm(data={'title': 'Drums'})
+        self.assertRaises(ValidationError, form.clean_title)
+
+    def test_try_to_create_non_existing_title(self):
+        user = User.objects.create_user(username='alien', email='alien@email.com', password='')
+        Category.objects.create(title='Drums', editor=user)
+        form = CategoryCreateForm(data={'title': 'Not drums'})
+        self.assertTrue(form.is_valid())
 
 
 class CategoryEditFormTest(TestCase):
-    def test_text_label(self):
-        form = CategoryEditForm()
-        self.assertTrue(form.fields['text'].label is None or form.fields['text'].label == 'Text')
+    def test_try_to_save_the_same_text(self):
+        user = User.objects.create_user(username='alien', email='alien@email.com', password='')
+        category = Category.objects.create(title='Drums', text='1', editor=user)
+        form = CategoryEditForm({'text': '1', 'msg': 'Nothing has changed'}, instance=category)
+        self.assertFalse(form.is_valid())
 
-    def test_msg_label(self):
-        form = CategoryEditForm()
-        self.assertTrue(form.fields['msg'].label is None or form.fields['msg'].label == 'Msg')
-
-    def test_no_text_duplicates(self):
+    def test_try_to_save_text(self):
         user = User.objects.create_user(username='alien', email='alien@email.com', password='')
         category = Category.objects.create(title='Drums', editor=user)
-        form = CategoryEditForm({'msg': 'something'}, instance=category)
-        self.assertFalse(form.is_valid())
+        form = CategoryEditForm({'text': '1', 'msg': '1'}, instance=category)
+        self.assertTrue(form.is_valid())

@@ -1,7 +1,6 @@
-from datetime import datetime
-from django import forms
 from django.db.models import Q
 from django.urls import reverse_lazy
+from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from apps.wiki.models import Article, History, Category
 from apps.wiki.forms import ArticleCreateForm, ArticleEditForm, CategoryCreateForm, CategoryEditForm

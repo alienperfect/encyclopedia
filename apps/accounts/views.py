@@ -1,4 +1,3 @@
-from django.db.models import Q
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.http import HttpResponseRedirect
@@ -42,7 +41,7 @@ class ProfileActivityView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        context['my_articles'] = History.objects.filter(Q(editor=user) & Q(json_data__model='wiki.article'))
-        context['my_categories'] = History.objects.filter(Q(editor=user) & Q(json_data__model='wiki.category'))
+        context['my_articles'] = History.objects.filter(editor=user, json_data__model='wiki.article')
+        context['my_categories'] = History.objects.filter(editor=user, json_data__model='wiki.category')
 
         return context
